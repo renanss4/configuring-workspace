@@ -100,9 +100,8 @@ EOF
 install_spotify() {
     if ! check_package "spotify-client"; then
         echo "Downloading and installing Spotify..."
-        wget -O /tmp/spotify.deb "https://download.spotify.com/debian/pool/non-free/s/spotify-client/spotify-client_1.1.61.583.gb698b7b4-16_amd64.deb"
-        sudo dpkg -i /tmp/spotify.deb
-        sudo apt install -f
+        sudo apt install snapd -y
+        sudo snap install spotify
         echo "Spotify installed successfully."
     else
         echo "Spotify is already installed."
@@ -123,6 +122,7 @@ create_folders() {
 
 # Function to choose which programs to install
 choose_installations() {
+    ask_sudo_password
     read -p "Enter your name: " username
     echo "Hello $username! How would you like to configure your environment?"
     echo "1- Install Everything"
@@ -142,7 +142,7 @@ choose_installations() {
         3) install_python ;;
         4) install_jupyter ;;
         5) install_vscode ;;
-        6) install_spotify ;;
+         6) install_spotify ;;
         7) echo "Nothing will be installed. Exiting." ;;
         *) echo "Invalid choice. Exiting." ;;
     esac
