@@ -211,16 +211,23 @@ choose_installations() {
 
     read -rp "Enter the number corresponding to your desired option: " choice
 
-    case $choice in
-        1) install_everything ;;
-        2) install_essential_packages ;;
-        3) install_python ;;
-        4) install_jupyter ;;
-        5) install_vscode ;;
-        6) install_spotify ;;
-        7) install_chrome ;;
-        8) echo "Nothing will be installed. Exiting." ;;
-    esac
+    # Remove spaces and hyphens, if any, and convert the string to an array
+    choices=$(echo "$choices" | tr -d ' -')
+    choices_array=($(echo $choices | sed 's/\(.\)/\1 /g'))
+
+    for choice in "${choices_array[@]}"; do
+        case $choice in
+            1) install_everything ;;
+            2) install_essential_packages ;;
+            3) install_python ;;
+            4) install_jupyter ;;
+            5) install_vscode ;;
+            6) install_spotify ;;
+            7) install_chrome ;;
+            8) echo "Nothing will be installed. Exiting." ;;
+            *) echo "Invalid choice: $choice. Skipping." ;;
+        esac
+    done
 }
 
 # Function to install everything
