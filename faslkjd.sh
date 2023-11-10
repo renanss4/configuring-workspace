@@ -9,7 +9,7 @@ check_system_language() {
     language=$(locale | grep LANGUAGE | cut -d= -f2 | cut -d: -f1)
     if [[ "$language" != "en_US" ]]; then
         echo "Your system language is set to $language."
-        read -p "Are you sure you want to continue with the installation? (y/n): " response
+        read -rp "Are you sure you want to continue with the installation? (y/n): " response
         if [[ "$response" =~ ^[Yy]$ ]]; then
             return 0
         else
@@ -198,7 +198,7 @@ ask_sudo_password() {
 choose_installations() {
     print_hello_world
     ask_sudo_password
-    read -p "Enter your name: " username
+    read -rp "Enter your name: " username
     echo "Hello $username! How would you like to configure your environment?"
     echo "1- Install Everything"
     echo "2- Essential Packages"
@@ -209,7 +209,7 @@ choose_installations() {
     echo "7- Google Chrome"
     echo "8- Do not install anything"
 
-    read -p "Enter the number corresponding to your desired option: " choice
+    read -rp "Enter the number corresponding to your desired option: " choice
 
     case $choice in
         1) install_everything ;;
