@@ -3,7 +3,11 @@ Desenvolver script shell para executar sempre que eu precisar trocar de computad
 
 - Próximo passo criar ambiente virtual no python, entrar nele e atualizar os programas, verficando se é a última versão instalada
 
-- Para rodar é preciiso dar permissão coom chmod +x ou 777 depois executar ./
+- Para rodar é preciso dar permissão coom chmod +x ou 777 depois executar ./
+
+- Você pode selecionar apenas o que achar necessário
+
+- Basta colocar os números na mesma linha
 
 Utilizei o ShellCheck para verificar erros nos scripts
 
