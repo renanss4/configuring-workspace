@@ -12,6 +12,7 @@ CHROME_URL="https://dl.google.com/linux/direct/google-chrome-stable_current_amd6
 
 # Function to check the system language
 check_system_language() {
+    # Check the system language and prompt the user if it's not English
     language=$(locale | grep LANGUAGE | cut -d= -f2 | cut -d: -f1)
     if [[ "$language" != "en_US" ]]; then
         echo "Your system language is set to $language."
@@ -30,11 +31,13 @@ check_system_language
 
 # Function to check if a package is installed
 check_package() {
+    # Check if the given package is installed
     dpkg -l "$1" &> /dev/null && { echo "$1 is already installed."; return 0; } || return 1
 }
 
 # Function to update the system
 update_system() {
+    # Check Internet connection and update the system if available
     echo "Checking Internet connection..."
     if ping -q -c 1 -W 1 google.com &> /dev/null; then
         echo "Internet connection found. Updating the system..."
@@ -47,6 +50,7 @@ update_system() {
 
 # Function to install essential packages
 install_essential_packages() {
+    # Install essential packages if not already installed
     packages=("git" "curl" "build-essential" "gcc" "make" "default-libmysqlclient-dev" "libssl-dev")
     
     for package in "${packages[@]}"; do
@@ -58,6 +62,7 @@ install_essential_packages() {
 
 # Function to install Python
 install_python() {
+    # Install Python and its development files
     if [ "$(lsb_release -cs)" == "bionic" ]; then
         echo "You are not on Ubuntu 22.04. Adding deadsnakes PPA for Python $PYTHON_VERSION..."
         sudo add-apt-repository "$DEADSNAKES_PPA"
@@ -85,6 +90,7 @@ install_python() {
 
 # Function to install Visual Studio Code
 install_vscode() {
+    # Install Visual Studio Code if not already installed
     check_package "code" || {
         echo "Downloading and installing Visual Studio Code..."
         wget -O /tmp/vscode.deb "$VS_CODE_URL"
@@ -116,6 +122,7 @@ EOF
 
 # Function to install Chrome
 install_chrome() {
+    # Install Google Chrome if not already installed
     check_package "google-chrome-stable" || {
         echo "Downloading and installing Google Chrome..."
         wget -O /tmp/chrome.deb "$CHROME_URL"
@@ -129,6 +136,7 @@ install_chrome() {
 
 # Function to install Spotify
 install_spotify() {
+    # Install Spotify if not already installed
     check_package "spotify-client" || {
         echo "Downloading and installing Spotify..."
         sudo apt install snapd -y
@@ -141,6 +149,7 @@ install_spotify() {
 
 # Function to install Jupyter
 install_jupyter() {
+    # Install Jupyter if not already installed
     check_package "jupyter" || {
         pip3 install jupyter
         echo "Jupyter installed successfully."
@@ -151,6 +160,7 @@ install_jupyter() {
 
 # Function to create folders on the desktop
 create_folders() {
+    # Create folders on the desktop based on user input
     desktop_path="$HOME/Desktop"
     projects_path="$desktop_path/Projects"
     workspace_path="$desktop_path/Workspace"
@@ -191,6 +201,7 @@ create_folders() {
 
 # Function to print Hello World in binary ASCII art
 print_hello_world() {
+    # Print Hello World in binary ASCII art
     cat << "EOF"
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -    
 - 01001000 01100101 01101100 01101111              -
@@ -207,7 +218,7 @@ print_hello_world() {
 -  __      __                 ___       __  __              -
 - /\ \  __/\ \               /\_ \     /\ \/\ \             -
 - \ \ \/\ \ \ \    ___   _ __\//\ \    \_\ \ \ \            -
--  \ \ \ \ \ \ \  / __`\/\`'__\\ \ \   /'_` \ \ \           -
+-  \ \ \ \ \ \ \  /__`\/\`'__\\ \ \   /'_` \ \ \           -
 -   \ \ \_/ \_\ \/\ \L\ \ \ \/  \_\ \_/\ \L\ \ \_\          -
 -    \ `\___x___/\ \____/\ \_\  /\____\ \___,_\/\_\         -
 -     '\/__//__/  \/___/  \/_/  \/____/\/__,_ /\/_/   r3n4n -
@@ -217,6 +228,7 @@ EOF
 
 # Function to ask for sudo password
 ask_sudo_password() {
+    # Ask for sudo password and keep it valid throughout the script execution
     sudo -v
     while true; do
         sudo true
@@ -227,6 +239,7 @@ ask_sudo_password() {
 
 # Function to choose which programs to install
 choose_installations() {
+    # Main function to choose which programs to install
     print_hello_world
     ask_sudo_password
     read -rp "Enter your name: " username
@@ -265,6 +278,7 @@ choose_installations() {
 
 # Function to install everything
 install_everything() {
+    # Install everything option
     update_system
     install_essential_packages
     install_python
