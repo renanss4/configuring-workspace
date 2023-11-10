@@ -1,5 +1,22 @@
 #!/bin/bash
 
+# Function to check the system language
+check_system_language() {
+    language=$(locale | grep LANGUAGE | cut -d= -f2)
+    if [[ "$language" != "en_US" ]]; then
+        read -p "Your system language is not set to English. Are you sure you want to continue? (y/n): " response
+        if [[ "$response" =~ ^[Yy]$ ]]; then
+            return 0
+        else
+            echo "Aborted."
+            exit 1
+        fi
+    fi
+}
+
+# Check system language before proceeding
+check_system_language
+
 # Function to check if a package is installed
 check_package() {
     if dpkg -l "$1" &> /dev/null; then
@@ -8,16 +25,6 @@ check_package() {
     else
         return 1
     fi
-}
-
-# Function to ask for sudo password
-ask_sudo_password() {
-    sudo -v
-    while true; do
-        sudo true
-        sleep 60
-        kill -0 "$$" || exit
-    done 2>/dev/null &
 }
 
 # Function to update the system
@@ -54,16 +61,6 @@ install_python() {
     fi
 }
 
-# Function to install Jupyter
-install_jupyter() {
-    if ! pip3 show jupyter &> /dev/null; then
-        pip3 install jupyter
-        echo "Jupyter installed successfully."
-    else
-        echo "Jupyter is already installed."
-    fi
-}
-
 # Function to install Visual Studio Code
 install_vscode() {
     if ! check_package "code"; then
@@ -96,6 +93,19 @@ EOF
     fi
 }
 
+# Function to install Chrome
+install_chrome() {
+    if ! check_package "google-chrome-stable"; then
+        echo "Downloading and installing Google Chrome..."
+        wget -O /tmp/chrome.deb "https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb"
+        sudo dpkg -i /tmp/chrome.deb
+        sudo apt install -f
+        echo "Google Chrome installed successfully."
+    else
+        echo "Google Chrome is already installed."
+    fi
+}
+
 # Function to install Spotify
 install_spotify() {
     if ! check_package "spotify-client"; then
@@ -108,20 +118,70 @@ install_spotify() {
     fi
 }
 
+# Function to install Jupyter
+install_jupyter() {
+    if ! pip3 show jupyter &> /dev/null; then
+        pip3 install jupyter
+        echo "Jupyter installed successfully."
+    else
+        echo "Jupyter is already installed."
+    fi
+}
+
 # Function to create folders on the desktop
 create_folders() {
     desktop_path="$HOME/Desktop"
     projects_path="$desktop_path/Projects"
     workspace_path="$desktop_path/Workspace"
 
-    mkdir -p "$projects_path"
-    mkdir -p "$workspace_path"
+    if [[ -d "$projects_path" && -d "$workspace_path" ]]; then
+        echo "Folders 'Projects' and 'Workspace' already exist on the desktop."
+    else
+        [[ ! -d "$projects_path" ]] && mkdir -p "$projects_path"
+        [[ ! -d "$workspace_path" ]] && mkdir -p "$workspace_path"
+        echo "Folders 'Projects' and 'Workspace' created on the desktop."
+    fi
+}
 
-    echo "Folders 'Projects' and 'Workspace' created on the desktop."
+# Function to print Hello World in binary ASCII art
+print_hello_world() {
+    cat << "EOF"
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -    
+- 01001000 01100101 01101100 01101100 01101111              -
+- 01010111 01101111 01110010 01101100 01100100 00100001     -
+-  __  __          ___    ___                               -
+- /\ \/\ \        /\_ \  /\_ \                              -
+- \ \ \_\ \     __\//\ \ \//\ \     ___                     -
+-  \ \  _  \  /'__`\\ \ \  \ \ \   / __`\                   -
+-   \ \ \ \ \/\  __/ \_\ \_ \_\ \_/\ \L\ \                  -
+-    \ \_\ \_\ \____\/\____\/\____\ \____/                  -
+-     \/_/\/_/\/____/\/____/\/____/\/___/                   -
+-                                                           -
+-                                                           -
+-  __      __                 ___       __  __              -
+- /\ \  __/\ \               /\_ \     /\ \/\ \             -
+- \ \ \/\ \ \ \    ___   _ __\//\ \    \_\ \ \ \            -
+-  \ \ \ \ \ \ \  / __`\/\`'__\\ \ \   /'_` \ \ \           -
+-   \ \ \_/ \_\ \/\ \L\ \ \ \/  \_\ \_/\ \L\ \ \_\          -
+-    \ `\___x___/\ \____/\ \_\  /\____\ \___,_\/\_\         -
+-     '\/__//__/  \/___/  \/_/  \/____/\/__,_ /\/_/   r3n4n -
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+EOF
+}
+
+# Function to ask for sudo password
+ask_sudo_password() {
+    sudo -v
+    while true; do
+        sudo true
+        sleep 60
+        kill -0 "$$" || exit
+    done 2>/dev/null &
 }
 
 # Function to choose which programs to install
 choose_installations() {
+    print_hello_world
     ask_sudo_password
     read -p "Enter your name: " username
     echo "Hello $username! How would you like to configure your environment?"
@@ -131,8 +191,8 @@ choose_installations() {
     echo "4- Jupyter"
     echo "5- Visual Studio Code"
     echo "6- Spotify"
-    echo "7- Do not install anything"
-    echo "*- Invalid option, nothing will be done"
+    echo "7- Google Chrome"
+    echo "8- Do not install anything"
 
     read -p "Enter the number corresponding to your desired option: " choice
 
@@ -142,8 +202,9 @@ choose_installations() {
         3) install_python ;;
         4) install_jupyter ;;
         5) install_vscode ;;
-         6) install_spotify ;;
-        7) echo "Nothing will be installed. Exiting." ;;
+        6) install_spotify ;;
+        7) install_chrome ;;
+        8) echo "Nothing will be installed. Exiting." ;;
         *) echo "Invalid choice. Exiting." ;;
     esac
 }
