@@ -1,10 +1,15 @@
 #!/bin/bash
 
+# Hi, welcome to my script. I hope that you like it and have fun!
+
+# Oi, bem-vindo ao meu script. Eu espero que você goste e se divirta!
+
 # Function to check the system language
 check_system_language() {
-    language=$(locale | grep LANGUAGE | cut -d= -f2)
+    language=$(locale | grep LANGUAGE | cut -d= -f2 | cut -d: -f1)
     if [[ "$language" != "en_US" ]]; then
-        read -p "Your system language is not set to English. Are you sure you want to continue? (y/n): " response
+        echo "Your system language is set to $language."
+        read -p "Are you sure you want to continue with the installation? (y/n): " response
         if [[ "$response" =~ ^[Yy]$ ]]; then
             return 0
         else
@@ -128,18 +133,28 @@ install_jupyter() {
     fi
 }
 
-# Function to create folders on the desktop
+# Function to create folders on the desktop or Área de Trabalho
 create_folders() {
     desktop_path="$HOME/Desktop"
     projects_path="$desktop_path/Projects"
     workspace_path="$desktop_path/Workspace"
 
-    if [[ -d "$projects_path" && -d "$workspace_path" ]]; then
-        echo "Folders 'Projects' and 'Workspace' already exist on the desktop."
+    # Check system language
+    system_language=$(locale | grep LANGUAGE | cut -d= -f2 | cut -d: -f1)
+
+    if [[ "$system_language" == "pt_BR"* ]]; then
+        desktop_path="$HOME/Área de Trabalho"
+        projects_path="$desktop_path/Projects"
+        workspace_path="$desktop_path/Workspace"
+    fi
+
+    # Check if folders exist
+    if [ -d "$projects_path" ] && [ -d "$workspace_path" ]; then
+        echo "Folders already exist. No need to create."
     else
-        [[ ! -d "$projects_path" ]] && mkdir -p "$projects_path"
-        [[ ! -d "$workspace_path" ]] && mkdir -p "$workspace_path"
-        echo "Folders 'Projects' and 'Workspace' created on the desktop."
+        mkdir -p "$projects_path"
+        mkdir -p "$workspace_path"
+        echo "Folders created on the desktop or Área de Trabalho."
     fi
 }
 
@@ -205,7 +220,6 @@ choose_installations() {
         6) install_spotify ;;
         7) install_chrome ;;
         8) echo "Nothing will be installed. Exiting." ;;
-        *) echo "Invalid choice. Exiting." ;;
     esac
 }
 
