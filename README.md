@@ -5,6 +5,8 @@ Melhorar o script, pois estou criando no ubuntu 18, o ideal é atualizar para ca
 
 - Próximo passo criar ambiente virtual no python, entrar nele e atualizar os programas, verficando se é a última versão instalada
 
+- Atualizar pip também
+
 - Para rodar é preciso dar permissão coom chmod +x ou 777 depois executar ./
 
 - Você pode selecionar apenas o que achar necessário
