@@ -193,3 +193,6 @@ install_everything() {
     install_chrome
     cleanup_temp_files
 }
+
+# Start
+install_everything
