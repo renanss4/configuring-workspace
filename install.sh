@@ -93,6 +93,12 @@ install_python() {
         echo "Python $PYTHON_VERSION development files installed successfully."
     }
 
+    check_package "python${PYTHON_VERSION}-pip" || {
+        echo "Installing pip for Python $PYTHON_VERSION..."
+        sudo apt install "python${PYTHON_VERSION}-pip" -y
+        echo "pip for Python $PYTHON_VERSION installed successfully."
+    }
+
     sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python${PYTHON_VERSION} 1
     sudo update-alternatives --set python3 /usr/bin/python${PYTHON_VERSION}
 
