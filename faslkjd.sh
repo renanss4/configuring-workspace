@@ -88,8 +88,21 @@ install_python() {
     # Add your custom packages or configurations here
 }
 
-# Function to install Visual Studio Code
+# Function to check and install build-essential (includes GCC)
+check_and_install_build_essential() {
+    check_package "build-essential" || {
+        echo "build-essential not found. Installing..."
+        sudo apt-get update
+        sudo apt-get install -y build-essential gdb
+        echo "build-essential installed successfully."
+    }
+
+    echo "build-essential is already installed."
+}
+
+# Function to install Visual Studio Code and extensions
 install_vscode() {
+    check_and_install_build_essential
     # Install Visual Studio Code if not already installed
     check_package "code" || {
         echo "Downloading and installing Visual Studio Code..."
@@ -98,16 +111,27 @@ install_vscode() {
         sudo apt install -f
         echo "Visual Studio Code installed successfully."
 
+        # Install VSCode extensions
+        echo "Installing VSCode extensions..."
+        code --install-extension ms-python.python
+        code --install-extension formulahendry.code-runner
+        code --install-extension PKief.material-icon-theme
+        code --install-extension ms-vscode.cpptools
+
         vscode_config="$HOME/.config/Code/User/settings.json"
         mkdir -p "$(dirname "$vscode_config")"
         cat <<EOF >"$vscode_config"
 {
-    "window.zoomLevel": 2,
+    // "window.zoomLevel": 2,
     "workbench.startupEditor": "none",
     "explorer.compactFolders": false,
     "workbench.iconTheme": "material-icon-theme",
     "code-runner.executorMap": {
         "python": "clear ; python3 -u",
+        "cpp": "clear && g++ -g $fullFileName -o $fileNameWithoutExt && ./$fileNameWithoutExt",
+        "c": "clear && gcc -g $fullFileName -o $fileNameWithoutExt && ./$fileNameWithoutExt",
+        // "lua": "clear && lua $fullFileName",
+        // "java": "clear && javac $fullFileName && java $fileNameWithoutExt"
     },
     "code-runner.runInTerminal": true,
     "code-runner.ignoreSelection": true,
@@ -145,17 +169,6 @@ install_spotify() {
     }
 
     echo "Spotify is already installed."
-}
-
-# Function to install Jupyter
-install_jupyter() {
-    # Install Jupyter if not already installed
-    check_package "jupyter" || {
-        pip3 install jupyter
-        echo "Jupyter installed successfully."
-    }
-
-    echo "Jupyter is already installed."
 }
 
 # Function to create folders on the desktop
@@ -237,6 +250,31 @@ ask_sudo_password() {
     done 2>/dev/null &
 }
 
+# Function to install essential packages and Python
+install_essential_and_python() {
+    update_system
+    install_essential_packages
+    install_python
+}
+
+# Function to install applications (Chrome, Spotify, VSCode)
+install_applications() {
+    update_system
+    install_chrome
+    install_spotify
+    install_vscode
+}
+
+# Function to install everything
+install_everything() {
+    update_system
+    install_essential_packages
+    install_python
+    install_vscode
+    install_applications
+    create_folders
+}
+
 # Function to choose which programs to install
 choose_installations() {
     # Main function to choose which programs to install
@@ -246,16 +284,12 @@ choose_installations() {
     echo ""
     echo "Hello $username! How would you like to configure your environment?"
     echo "1- Install Everything"
-    echo "2- Essential Packages"
-    echo "3- Python"
-    echo "4- Jupyter"
-    echo "5- Visual Studio Code"
-    echo "6- Spotify"
-    echo "7- Google Chrome"
-    echo "8- Create folders in Desktop"
-    echo "9- Do not install anything"
+    echo "2- Essential Packages and Python"
+    echo "3- Applications (Chrome, Spotify, VSCode)"
+    echo "4- Create folders in Desktop"
+    echo "5- Do not install anything"
 
-    read -rp "Enter the numbers corresponding to your desired options (e.g., 27 for Essential Packages and Google Chrome): " choices
+    read -rp "Enter the numbers corresponding to your desired options (e.g., 23 for Essential Packages, Python and Applications, or 34 for Applications and Create folders): " choices
 
     # Create an array of choices
     choices_array=($(echo "$choices" | sed 's/\(.\)/\1 /g'))
@@ -263,31 +297,14 @@ choose_installations() {
     for choice in "${choices_array[@]}"; do
         case $choice in
             1) install_everything ;;
-            2) install_essential_packages ;;
-            3) install_python ;;
-            4) install_jupyter ;;
-            5) install_vscode ;;
-            6) install_spotify ;;
-            7) install_chrome ;;
-            8) create_folders ;;
-            9) echo "Nothing will be installed. Exiting." ;;
+            2) install_essential_and_python ;;
+            3) install_applications ;;
+            4) create_folders ;;
+            5) echo "Nothing will be installed. Exiting." ;;
             *) echo "Invalid choice: $choice. Skipping." ;;
         esac
     done
 }
 
-# Function to install everything
-install_everything() {
-    # Install everything option
-    update_system
-    install_essential_packages
-    install_python
-    install_jupyter
-    install_vscode
-    install_spotify
-    create_folders
-}
-
 # Execute the function to choose installations
 choose_installations
-
