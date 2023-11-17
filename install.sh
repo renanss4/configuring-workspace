@@ -124,6 +124,9 @@ install_vscode() {
         sudo apt install -f
         echo "Visual Studio Code installed successfully."
 
+        fullFileName="$(realpath "${BASH_SOURCE[0]}")"
+        fileNameWithoutExt="${fullFileName%.*}"
+
         # Install VSCode extensions
         echo "Installing VSCode extensions..."
         code --install-extension ms-python.python
@@ -171,6 +174,13 @@ install_chrome() {
     echo "Google Chrome is already installed."
 }
 
+# Function to clean up temporary files
+cleanup_temp_files() {
+    # Remove temporary files
+    rm -f /tmp/vscode.deb
+    rm -f /tmp/chrome.deb
+}
+
 # Function to install everything
 install_everything() {
     print_hello_world
@@ -181,4 +191,5 @@ install_everything() {
     install_build_essential
     install_vscode
     install_chrome
+    cleanup_temp_files
 }
