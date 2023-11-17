@@ -20,3 +20,10 @@ Utilizei as seguintes documentações para aprender o Bash Shell
 - https://ryanstutorials.net/bash-scripting-tutorial/
 
 - https://www.gnu.org/software/bash/manual/
+
+
+Criei o arquivo requirements.txt para baixar as bibliotecas do python que eu desejar
+
+para rodar é:
+
+- pip install -r requirements.txt
