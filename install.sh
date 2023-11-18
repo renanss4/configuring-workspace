@@ -32,20 +32,23 @@ print_hello_world() {
 EOF
 }
 
-# Function to check the system language
-check_system_language() {
-    # Check the system language and prompt the user if it's not English
-    language=$(locale | grep LANGUAGE | cut -d= -f2 | cut -d: -f1)
-    if [[ "$language" != "en_US" ]]; then
-        echo "Your system language is set to $language."
-        read -rp "Are you sure you want to continue with the installation? (y/n): " response
-        if [[ "$response" =~ ^[Yy]$ ]]; then
-            return 0
-        else
-            echo "Aborted."
+# Function to request confirmation
+confirm_installation() {
+    read -rp "Do you want to continue with the installation? (y/n): " response
+
+    case "$response" in
+        y|Y|"")
+            # If the response is yes or Enter is pressed, continue
+            ;;
+        n|N)
+            echo "Installation canceled."
             exit 1
-        fi
-    fi
+            ;;
+        *)
+            echo "Invalid option. Please enter 'y' for Yes or 'n' for No."
+            confirm_installation
+            ;;
+    esac
 }
 
 # Function to check if a package is installed
@@ -56,14 +59,25 @@ check_package() {
 
 # Function to update the system
 update_system() {
-    # Check Internet connection and update the system if available
+    # Check Internet connection
     echo "Checking Internet connection..."
     if ping -q -c 1 -W 1 google.com &> /dev/null; then
-        echo "Internet connection found. Updating the system..."
-        sudo apt update -y && sudo apt upgrade -y
-        echo "System updated successfully."
+        echo "Internet connection found."
+
+        # Check for upgradable packages
+        upgradable_packages=$(apt list --upgradable 2>/dev/null | grep -c "upgradable")
+
+        if [ "$upgradable_packages" -eq 0 ]; then
+            echo "No upgradable packages found."
+        else
+            echo "Upgradable packages found. Updating the system..."
+            sudo apt update -y && sudo apt upgrade -y
+            sudo apt list --upgradable
+            sudo apt --fix-broken install -y
+            echo "System updated successfully."
+        fi
     else
-        echo "No Internet connection. Unable to update the system."
+        echo "No Internet connection. Unable to check for upgradable packages or update the system."
     fi
 }
 
@@ -93,9 +107,10 @@ install_python() {
         echo "Python $PYTHON_VERSION development files installed successfully."
     }
 
-    check_package "python${PYTHON_VERSION}-pip" || {
+    check_package "python3-pip" || {
         echo "Installing pip for Python $PYTHON_VERSION..."
-        sudo apt install "python${PYTHON_VERSION}-pip" -y
+        sudo apt install python3-pip -y
+        sudo python3 -m pip install --upgrade pip -y
         echo "pip for Python $PYTHON_VERSION installed successfully."
     }
 
@@ -149,11 +164,10 @@ install_vscode() {
     "explorer.compactFolders": false,
     "workbench.iconTheme": "material-icon-theme",
     "code-runner.executorMap": {
-        "python": "clear ; python3 -u",
-        "cpp": "clear && g++ -g $fullFileName -o $fileNameWithoutExt && ./$fileNameWithoutExt",
-        "c": "clear && gcc -g $fullFileName -o $fileNameWithoutExt && ./$fileNameWithoutExt",
-        // "lua": "clear && lua $fullFileName",
-        // "java": "clear && javac $fullFileName && java $fileNameWithoutExt"
+        "python": "clear && python3 -u",
+        "cpp": "clear && mkdir -p compiled && g++ -o compiled/$fileNameWithoutExt $fullFileName && ./compiled/$fileNameWithoutExt",
+        "c": "clear && mkdir -p compiled && gcc -o compiled/$fileNameWithoutExt $fullFileName && ./compiled/$fileNameWithoutExt",
+        // "java": "clear && mkdir -p compiled && javac compiled/$fileNameWithoutExt && java ./compiled/$fileNameWithoutExt"
     },
     "code-runner.runInTerminal": true,
     "code-runner.ignoreSelection": true,
@@ -190,7 +204,7 @@ cleanup_temp_files() {
 # Function to install everything
 install_everything() {
     print_hello_world
-    check_system_language
+    confirm_installation
     update_system
     install_essential_packages
     install_python
@@ -198,6 +212,7 @@ install_everything() {
     install_vscode
     install_chrome
     cleanup_temp_files
+    update_system
 }
 
 # Start
