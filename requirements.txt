@@ -1,6 +1,7 @@
 jupyter
 # pandas 
 # numpy
+# scikit-learn
 # tensorflow
 # torch
 # nltk
