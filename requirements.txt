@@ -1,1 +1,8 @@
 jupyter
+# pandas 
+# numpy
+# tensorflow
+# torch
+# nltk
+# scrapy
+# beautifulsoup4
