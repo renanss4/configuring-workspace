@@ -1,31 +1,87 @@
-# workspace
-Desenvolver script shell para executar sempre que eu precisar trocar de computador, assim sempre terei meus programas instalados
+# Configuring Workspace
 
-Melhorar o script, pois estou criando no ubuntu 18, o ideal é atualizar para caso eu vá rodar em versões mais novas como 20 ou 22
+Lately I have needed to format several computers and I always start by doing all my user configuration and then installing the applications. That's why I developed this shell script to run whenever I need to change computers, so I always have my programs installed and my environment updated.
 
-- Próximo passo criar ambiente virtual no python, entrar nele e atualizar os programas, verficando se é a última versão instalada
+---
 
-- Atualizar pip também
+### Description
 
-- Para rodar é preciso dar permissão coom chmod +x ou 777 depois executar ./
+Currently the script installs the following programs such as Chrome, VScode (with all my personal settings), Python and other essential packages.
 
-- Você pode selecionar apenas o que achar necessário
+This script **was developed to run on Ubuntu**, more specifically on version **22.02 LTS,** but one day I will create new versions to cover other OS.
 
-- Basta colocar os números na mesma linha
+I used ShellCheck to check the scripts for errors:
 
-Utilizei o ShellCheck para verificar erros nos scripts
+- [ShellCheck]([https://www.shellcheck.net/](https://www.shellcheck.net/))
 
-- https://www.shellcheck.net/
+I used the following documentation to learn Bash Shell:
 
-Utilizei as seguintes documentações para aprender o Bash Shell
+- [Ryans Tutorials](https://ryanstutorials.net/bash-scripting-tutorial/)
 
-- https://ryanstutorials.net/bash-scripting-tutorial/
+- [GNU Bash Manual](https://www.gnu.org/software/bash/manual/)
 
-- https://www.gnu.org/software/bash/manual/
+---
 
+### Download and Installation
 
-Criei o arquivo requirements.txt para baixar as bibliotecas do python que eu desejar
+1. Cloninig the repostory
 
-para rodar é:
+```git
+git clone https://github.com/renanss4/configuring-workspace.git
+```
 
-- pip install -r requirements.txt
+2. Going to the project
+
+```bash
+cd ./configuring-workspace
+```
+
+3. Giving permissions
+
+```bash
+chmod +x install.sh
+```
+
+4. Run
+
+```bash
+./install.sh
+```
+
+---
+
+### Testing
+
+If everything went well, now it's time to test :)
+
+1. Open VScode
+
+```bash
+code .
+```
+
+2. Find the following files
+
+   ![Files](./images/files.png)
+
+3. Run Code Runner
+
+   ![CodeRunner](./images/coderunner.png)
+
+If they were printed and compiled, then everything went well :)
+
+---
+
+### Next steps
+
+1. Cover other OS
+
+2. Create environment for Data Science
+   
+   - Using requirements.txt
+   
+   ```python
+   pip3 install -r requrements.txt
+   ```
+
+3. Improve documentation and scripting
