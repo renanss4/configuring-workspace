@@ -98,6 +98,8 @@ install_python() {
     # Install Python and its development files
     check_package "python${PYTHON_VERSION}" || {
         sudo apt install "python${PYTHON_VERSION}-full" -y
+        sudo apt install python3-pip -y
+        sudo python3 -m pip install --upgrade pip -y
         echo "Python $PYTHON_VERSION installed successfully."
     }
 
@@ -107,17 +109,10 @@ install_python() {
         echo "Python $PYTHON_VERSION development files installed successfully."
     }
 
-    check_package "python3-pip" || {
-        echo "Installing pip for Python $PYTHON_VERSION..."
-        sudo apt install python3-pip -y
-        sudo python3 -m pip install --upgrade pip -y
-        echo "pip for Python $PYTHON_VERSION installed successfully."
-    }
+    # sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python${PYTHON_VERSION} 1
+    # sudo update-alternatives --set python3 /usr/bin/python${PYTHON_VERSION}
 
-    sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python${PYTHON_VERSION} 1
-    sudo update-alternatives --set python3 /usr/bin/python${PYTHON_VERSION}
-
-    echo "Python $PYTHON_VERSION is now the default version."
+    # echo "Python $PYTHON_VERSION is now the default version."
     # Additional packages or configurations specific to Python $PYTHON_VERSION
     # Add your custom packages or configurations here
 }
