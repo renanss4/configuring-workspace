@@ -198,7 +198,7 @@ cleanup_temp_files() {
 
 # Function to install everything
 install_everything() {
-    print_hello_world
+    # print_hello_world
     confirm_installation
     update_system
     install_essential_packages
