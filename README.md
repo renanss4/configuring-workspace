@@ -12,7 +12,7 @@ This script **was developed to run on Ubuntu**, more specifically on version **2
 
 I used ShellCheck to check the scripts for errors:
 
-- [ShellCheck]([https://www.shellcheck.net/](https://www.shellcheck.net/))
+- [ShellCheck](https://www.shellcheck.net/)
 
 I used the following documentation to learn Bash Shell:
 
