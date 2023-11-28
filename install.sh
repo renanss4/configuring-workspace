@@ -5,33 +5,6 @@ PYTHON_VERSION="3.10"
 VS_CODE_URL="https://go.microsoft.com/fwlink/?LinkID=760868"
 CHROME_URL="https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb"
 
-# Function to print Hello World in binary ASCII art
-print_hello_world() {
-    # Print Hello World in binary ASCII art
-    cat << "EOF"
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -    
-- 01001000 01100101 01101100 01101111              -
-- 01010111 01101111 01110010 01101100 01100100 00100001     -
--  __  __          ___    ___                               -
-- /\ \/\ \        /\_ \  /\_ \                              -
-- \ \ \_\ \     __\//\ \ \//\ \     ___                     -
--  \ \  _  \  /'__`\\ \ \  \ \ \   / __`\                   -
--   \ \ \ \ \/\  __/ \_\ \_ \_\ \_/\ \L\ \                  -
--    \ \_\ \_\ \____\/\____\/\____\ \____/                  -
--     \/_/\/_/\/____/\/____/\/____/\/___/                   -
--                                                           -
--                                                           -
--  __      __                 ___       __  __              -
-- /\ \  __/\ \               /\_ \     /\ \/\ \             -
-- \ \ \/\ \ \ \    ___   _ __\//\ \    \_\ \ \ \            -
--  \ \ \ \ \ \ \  / __`\/\`'__\\ \ \   /'_` \ \ \           -
--   \ \ \_/ \_\ \/\ \L\ \ \ \/  \_\ \_/\ \L\ \ \_\          -
--    \ `\___x___/\ \____/\ \_\  /\____\ \___,_\/\_\         -
--     '\/__//__/  \/___/  \/_/  \/____/\/__,_ /\/_/   r3n4n -
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-EOF
-}
-
 # Function to request confirmation
 confirm_installation() {
     read -rp "Do you want to continue with the installation? (y/n): " response
@@ -108,13 +81,6 @@ install_python() {
         sudo apt install "python${PYTHON_VERSION}-dev" -y
         echo "Python $PYTHON_VERSION development files installed successfully."
     }
-
-    # sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python${PYTHON_VERSION} 1
-    # sudo update-alternatives --set python3 /usr/bin/python${PYTHON_VERSION}
-
-    # echo "Python $PYTHON_VERSION is now the default version."
-    # Additional packages or configurations specific to Python $PYTHON_VERSION
-    # Add your custom packages or configurations here
 }
 
 # Function to check and install build-essential (includes GCC)
@@ -198,7 +164,6 @@ cleanup_temp_files() {
 
 # Function to install everything
 install_everything() {
-    # print_hello_world
     confirm_installation
     update_system
     install_essential_packages
