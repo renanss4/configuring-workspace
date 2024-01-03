@@ -155,6 +155,49 @@ install_chrome() {
     echo "Google Chrome is already installed."
 }
 
+# Function to install Eclipse IDE for Java and delete the leftover file
+install_eclipse() {
+    # Define the URL for Eclipse IDE download
+    ECLIPSE_URL="https://downloads.eclipse.org/technology/epp/downloads/release/2021-03/R/eclipse-java-2021-03-R-linux-gtk-x86_64.tar.gz"
+
+    # Define the Eclipse installation directory
+    ECLIPSE_INSTALL_DIR="/opt"
+
+    # Check if Eclipse is already installed
+    if [ -d "$ECLIPSE_INSTALL_DIR/eclipse" ]; then
+        echo "Eclipse IDE is already installed in $ECLIPSE_INSTALL_DIR."
+        return
+    fi
+
+    # Create the installation directory if it doesn't exist
+    sudo mkdir -p "$ECLIPSE_INSTALL_DIR"
+
+    # Download Eclipse
+    echo "Downloading Eclipse IDE..."
+    wget -O /tmp/eclipse.tar.gz "$ECLIPSE_URL"
+
+    # Extract Eclipse to the installation directory
+    sudo tar xf /tmp/eclipse.tar.gz -C "$ECLIPSE_INSTALL_DIR"
+
+    # Remove the compressed file after extraction
+    rm -f /tmp/eclipse.tar.gz
+
+    # Add execute permissions to Eclipse files
+    sudo chmod -R +rwx "$ECLIPSE_INSTALL_DIR/eclipse"
+
+    # Create a symbolic link for the Eclipse executable in the /usr/local/bin directory
+    sudo ln -s "$ECLIPSE_INSTALL_DIR/eclipse/eclipse" /usr/local/bin/eclipse
+
+    echo "Eclipse IDE installed successfully in $ECLIPSE_INSTALL_DIR."
+
+    # Delete the leftover tar.gz file
+    echo "Deleting leftover Eclipse tar.gz file..."
+    rm -f /tmp/eclipse.tar.gz
+}
+
+# Uncomment the function call install_eclipse at the end of the script if desired
+# install_eclipse
+
 # Function to clean up temporary files
 cleanup_temp_files() {
     # Remove temporary files
